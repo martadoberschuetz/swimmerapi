@@ -1,0 +1,169 @@
+FORMAT: 1A
+HOST: http://swimmerapi.apiblueprint.org/
+
+# Swimmers
+
+Polls is a simple API allowing consumers to view swimmers.
+
+# Swimmers API Root [/]
+
+This resource does not have any attributes. Instead it offers the initial API affordances in the
+form of the links in the JSON body.
+
+It is recommend to follow the “url” link values, [Link](https://tools.ietf.org/html/rfc5988) or 
+Location headers where applicable to retrieve resources. Instead of constructing your own URLs,
+to keep your client decoupled from implementation details.
+
+## Retrieve the Entry Point [GET]
+
++ Response 200 (application/json)
+
+        {
+            "swimmers_url": "/swimmers"
+        }
+
+## Group Swimmer
+
+Resources related to swimmers in the API.
+
+## Swimmer [/swimmers/{swimmer_id}]
+
+A Swimmer object has the following attributes:
+
++ name
++ date_of_birth - An ISO8601 date when the question was published.
++ url
++ achievements - An array of Achievement objects.
+
++ Parameters
+    + swimmer_id: 1 (required, number) - ID of the Swimmer in form of an integer
+
+### View a Swimmer Detail [GET]
+
++ Response 200 (application/json)
+
+        {
+            "name": "Michael Phelps",
+            "date_of_birth": "1986-11-11T08:40:51.620Z",
+            "url": "/swimmers/1",
+            "achievements": [
+                {
+                    "competition_name": "Arena Pro Series",
+                    "url": "/swimmers/1/achievements/1",
+                    "number_of_medals": 2048
+                }, {
+                    "competition_name": "London Summer Olympics 2012",
+                    "url": "/swimmers/1/schievements/2",
+                    "number_of_medals": 1024
+                }
+            ]
+        }
+
+## Achievement [/swimmers/{swimmer_id}/achievements/{achievement_id}]
+
++ Parameters
+    + swimmer_id: 1 (required, number) - ID of the Swimmer in form of an integer
+    + achievement_id: 1 (required, number) - ID of the Achievement in form of an integer
+
+### Add an Achievement [POST]
+
+This action allows you to add a swimmer's achievement.
+
++ Response 201
+
+    + Headers
+
+            Location: /swimmers/1
+
+## Swimmers Collection [/swimmers{?page}]
+
++ Parameters
+    + page: 1 (optional, number) - The page of swimmers to return
+
+### List All Swimmers [GET]
+
++ Response 200 (application/json)
+
+    + Headers
+
+            Link: </swimmers?page=2>; rel="next"
+
+    + Body
+
+            [
+                {
+                    "name": "Michael Phelps",
+                    "date_of_birth": "1986-11-11T08:40:51.620Z",
+                    "url": "/swimmers/1",
+                    "achievements": [
+                        {
+                            "competition_name": "Arena Pro Series",
+                            "url": "/swimmers/1/achievements/1",
+                            "number_of_medals": 20
+                        }, {
+                            "competition_name": "London Summer Olympics 2012",
+                            "url": "/swimmers/1/schievements/2",
+                            "number_of_medals": 22
+                        }
+                    ]
+                }, {
+                    "name": "Dara Torres",
+                    "date_of_birth": "1966-11-11T08:40:51.620Z",
+                    "url": "/swimmers/2",
+                    "achievements": [
+                        {
+                            "competition_name": "Arena Pro Series",
+                            "url": "/swimmers/2/achievements/1",
+                            "number_of_medals": 10
+                        }, {
+                            "competition_name": "London Summer Olympics 2012",
+                            "url": "/swimmers/2/schievements/2",
+                            "number_of_medals": 1024
+                        }
+                    ]
+                }
+            ]
+
+### Create a New Swimmer [POST]
+
+You may create your own swimmer using this action. It takes a JSON object containing a swimmer and
+a collection of achievements.
+
++ swimmer (string) - The swimmer
++ achievements (array[string]) - A collection of achievements.
+
++ Request (application/json)
+
+        {
+            "name": "Katinka Hossu",
+            "achievements": [
+                "Arena Pro series",
+                "Nationals",
+                "Rio Olympics"
+            ]
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /swimmers/2
+
+    + Body
+
+            {
+                    "name": "Katinka Hossu",
+                    "date_of_birth": "1976-11-11T08:40:51.620Z",
+                    "url": "/swimmers/3",
+                    "achievements": [
+                        {
+                            "competition_name": "Arena Pro Series",
+                            "url": "/swimmers/3/achievements/1",
+                            "number_of_medals": 10
+                        }, {
+                            "competition_name": "London Summer Olympics 2012",
+                            "url": "/swimmers/3/schievements/2",
+                            "number_of_medals": 1024
+                        }
+                    ]
+                }
