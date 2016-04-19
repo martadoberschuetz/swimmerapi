@@ -1,0 +1,2 @@
+# swimmerapi
+# API blueprint example
